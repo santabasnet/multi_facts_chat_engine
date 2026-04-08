@@ -1,0 +1,34 @@
+
+start: rule+
+
+rule: "RULE" NAME priority? when_block then_block "END"
+
+priority: "PRIORITY" NUMBER
+
+when_block: "WHEN" condition+
+then_block: "THEN" action+
+
+condition: NAME comparator value
+action: NAME "=" expr
+
+expr: term
+    | expr "*" term -> mul
+    | expr "+" term -> add
+    | expr "-" term -> sub
+
+term: NAME
+    | NUMBER
+    | STRING
+
+comparator: COMPARATOR
+COMPARATOR: "=" | ">" | "<"
+value: STRING | NUMBER | NAME
+
+NAME: /[a-zA-Z_][a-zA-Z0-9_]*/
+STRING: ESCAPED_STRING
+NUMBER: SIGNED_NUMBER
+
+%import common.ESCAPED_STRING
+%import common.SIGNED_NUMBER
+%import common.WS
+%ignore WS

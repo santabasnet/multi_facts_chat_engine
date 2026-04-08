@@ -1,0 +1,22 @@
+[project]
+name = "agro-inference-engine"
+version = "0.1.0"
+description = "Agriculture expert system inference engine with DSL -> AST compiler"
+requires-python = ">=3.13"
+
+dependencies = [
+    "google-generativeai>=0.8.6",
+    "lark>=1.1.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy"
+]
+
+ai = [
+    "networkx",
+    "pydantic"
+]

@@ -1,0 +1,47 @@
+start: rule+
+
+rule: "rule" NAME ":"? when_clause then_clause
+
+when_clause: "when" condition ("and" condition)*
+then_clause: "then" assignment
+
+condition: field comparator condition_value
+         | field "in" list_value
+
+assignment: NAME "=" expr
+
+?expr: sum
+
+?sum: product
+    | sum "+" product -> add
+    | sum "-" product -> sub
+
+?product: atom
+    | product "*" atom -> mul
+    | product "/" atom -> div
+
+?atom: NUMBER -> number
+     | STRING -> string
+     | NAME -> var
+     | "min" "(" expr "," expr ")" -> min_func
+     | "max" "(" expr "," expr ")" -> max_func
+     | "(" expr ")"
+
+field: NAME
+
+?comparator: "==" -> eq | "!=" -> neq | "<=" -> lte | ">=" -> gte | "<" -> lt | ">" -> gt
+
+?condition_value: STRING -> string_val
+                | NUMBER -> number_val
+
+value: STRING
+
+list_value: "[" value ("," value)* "]"
+
+NAME: /[a-zA-Z_][a-zA-Z0-9_]*/
+
+%import common.NUMBER
+%import common.ESCAPED_STRING -> STRING
+%import common.WS
+%ignore WS
+%ignore /#[^\n]*/
