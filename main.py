@@ -90,6 +90,59 @@ def run_salary_facts() -> None:
     execute_dsl(rules, facts)
 
 
+def _fill_missing_salary_facts(facts: Dict[str, Any]) -> Dict[str, Any]:
+    """Interactively ask follow-up questions for any salary field that is missing or empty."""
+
+    def _is_blank(value: Any) -> bool:
+        return value is None or value == "" or value == 0 and isinstance(value, str)
+
+    missing_any = any(_is_blank(facts.get(k)) for k in ("name", "annualSalary", "status", "citContribution"))
+    if not missing_any:
+        return facts
+
+    print(literals.MSG_MISSING_FIELDS)
+
+    # --- name ---
+    if _is_blank(facts.get("name")):
+        while True:
+            val = input(literals.PROMPT_FOLLOWUP_NAME).strip()
+            if val:
+                facts["name"] = val
+                break
+
+    # --- annualSalary ---
+    if _is_blank(facts.get("annualSalary")):
+        while True:
+            val = input(literals.PROMPT_FOLLOWUP_ANNUAL_SALARY).strip()
+            try:
+                facts["annualSalary"] = float(val)
+                break
+            except ValueError:
+                print(literals.ERR_FOLLOWUP_SALARY_NUMBER)
+
+    # --- status ---
+    if _is_blank(facts.get("status")):
+        while True:
+            val = input(literals.PROMPT_FOLLOWUP_STATUS).strip().lower()
+            if val in ("married", "unmarried"):
+                facts["status"] = val
+                break
+            print(literals.ERR_FOLLOWUP_STATUS_INVALID)
+
+    # --- citContribution ---
+    if _is_blank(facts.get("citContribution")):
+        while True:
+            val = input(literals.PROMPT_FOLLOWUP_CIT).strip()
+            try:
+                facts["citContribution"] = float(val)
+                break
+            except ValueError:
+                print(literals.ERR_FOLLOWUP_CIT_NUMBER)
+
+    print(literals.MSG_FACTS_COMPLETE)
+    return facts
+
+
 def run_salary_from_biography() -> None:
     from agent.extractor import extract_facts
 
@@ -109,6 +162,9 @@ def run_salary_from_biography() -> None:
 
     print(literals.TITLE_EXTRACTED_FACTS)
     print(json.dumps(facts, indent=4))
+
+    # Fill in any fields Gemini could not extract
+    facts = _fill_missing_salary_facts(facts)
 
     print(literals.MSG_COMPUTING_SALARY)
 

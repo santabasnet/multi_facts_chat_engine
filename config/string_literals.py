@@ -41,6 +41,17 @@ MSG_SALARY_FAILURE = (
     "and CIT contribution information."
 )
 
+# Follow-up question prompts (used when extracted facts are incomplete)
+MSG_MISSING_FIELDS = "\n⚠️  Some details could not be extracted. Please answer the follow-up questions below."
+PROMPT_FOLLOWUP_NAME           = "  • What is the person's full name? > "
+PROMPT_FOLLOWUP_ANNUAL_SALARY  = "  • What is their annual salary in NPR? > "
+PROMPT_FOLLOWUP_STATUS         = "  • What is their marital status? (married/unmarried) > "
+PROMPT_FOLLOWUP_CIT            = "  • What is their annual CIT contribution in NPR? (enter 0 if none) > "
+ERR_FOLLOWUP_SALARY_NUMBER     = "     ⚠️  Please enter a valid number for salary."
+ERR_FOLLOWUP_CIT_NUMBER        = "     ⚠️  Please enter a valid number for CIT contribution."
+ERR_FOLLOWUP_STATUS_INVALID    = "     ⚠️  Please enter either 'married' or 'unmarried'."
+MSG_FACTS_COMPLETE             = "\n✅  All required details collected. Proceeding with salary computation..."
+
 MSG_FINAL_FACTS = "Final Facts:"
 MSG_EXPLANATION_TREE = "\nExplanation Tree"
 
